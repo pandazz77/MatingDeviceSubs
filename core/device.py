@@ -1,7 +1,9 @@
 from nmea_generator import GLL, RMC
+from simulator import ChannelSub
 
-class Device:
-    def __init__(self,name:str,address:int,gen_list:list):
+class Device(ChannelSub):
+    def __init__(self,name:str,address:int,gen_list:list,UDP_IP:str,UDP_PORT:int,channel_list:list):
+        super().__init__(UDP_IP,UDP_PORT,channel_list)
         self.name = name
         self.address = address
         self.gen_list = gen_list
@@ -56,24 +58,37 @@ class Device:
 
         return message
     
-    def get_packet(self):
+    def get_inf_packet(self):
         inf_packet = ""
         for generator in self.gen_list:
             inf_packet+=self.encode_inf_packet(generator.generate())
-        #n_com = self.get_n_com(inf_packet)
-        packet=inf_packet#self.get_com_word(5,n_com)+self.get_res_word(5)+inf_packet+self.get_com_word(5,n_com)
-        return packet
-    
+        return inf_packet
+
+    # ChannelSub methods
+    def handle(self, data, addr):
+        received_data = data.decode()
+        print(received_data)
+        SYNC = received_data[:3]
+        if SYNC==self.SYNC_C: # command word
+            ADDR_RT = int(received_data[3:8],2)
+            WR = int(received_data[8],2)
+            SUB_ADDR = int(received_data[9:14],2)
+            N_COM = int(received_data[14:19],2)
+            if ADDR_RT!=self.address | ADDR_RT!=31 : raise Exception("Invalid address")
+            if WR==1: # controller requests data
+                self.send_data(self.get_res_word(SUB_ADDR)+self.get_inf_packet())
+            else: # controller sending data
+                print(self.decode_inf_packet(received_data[20:]))
+                self.send_data(self.get_res_word(SUB_ADDR))
+
+        elif SYNC==self.SYNC_D: # information word
+            print(self.decode_inf_packet(received_data))
+
+        else:
+            raise Exception("Unknown sync signal")
+
+
 if __name__ == "__main__":
-    d = Device("DEVICE_1",1,[GLL("GP"),RMC("GP")])
-    #print(d.gen_binary("hello"))
-    #print(d.get_parity(0b1101000))
-    #print(len(d.get_inf_word("1000000110000001")))
-    #packet = d.encode_inf_packet(d.gen_list[0].generate())
-    #print(packet)
-    #print(d.decode_inf_packet(packet))
-    #print(d.get_com_word(3,5))
-    packet = d.get_packet()
-    print(packet)
-    print(len(packet))
-    print(d.decode_inf_packet(packet))
+    d = Device("DEVICE_1",1,[GLL("GP"),RMC("GP")],"127.0.0.1",4001,[("127.0.0.1",4000)])
+    d.start()
+    d.join()
