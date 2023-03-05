@@ -27,7 +27,7 @@ class Device(ChannelSub):
         return self.SYNC_C+data+self.get_parity(data)
 
     def get_res_word(self,addr_rt:int):
-        data = format(addr_rt,"05b")+"000000000"
+        data = format(addr_rt,"05b")+"00000000000"
         return self.SYNC_C+data+self.get_parity(data)
 
     def get_inf_word(self,data:str): # data in binary format (string)
