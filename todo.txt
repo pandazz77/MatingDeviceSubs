@@ -2,7 +2,7 @@
 TODO:
 * MIL-STD -> ETHERNET ✔️
 * FIX GLL (+5,6,7 field) ✔️
-* ZDA generator
+* ZDA generator ✔️
 * VTG generator
 * GGA generator (requesting)
 * make RMC a requesting generator
