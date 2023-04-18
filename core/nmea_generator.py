@@ -49,6 +49,16 @@ class Generator:
     
     def gen_date(self,index):
         self.message[index]=time.strftime("%d%m%y",time.gmtime())
+
+    def gen_speed(self,index):
+        new_speed = (float(self.message[index]) + random.uniform(-1,1))
+        if new_speed>20 or new_speed<0: return self.gen_speed(index)
+        self.message[index] = "%04.2f" % new_speed
+
+    def gen_heading(self,index):
+        new_heading = (float(self.message[index]) + random.uniform(-1,1))
+        if new_heading>359 or new_heading<0: return self.gen_heading()
+        self.message[index] = "%04.2f" % new_heading
     
 
 class GLL(Generator): #[name,latitude,N/S,longitude,E/W,time,A/V,A/D/E/M/N]
@@ -73,28 +83,34 @@ class ZDA(Generator): #[name,UTCtime,day,month,year,UTC dif hours, UTC dif minut
 
     def gen_year(self):
         self.message[4] = time.strftime("%Y",time.gmtime())
+
+class VTG(Generator): #[name,Nheading,T/F,,M,speed,speed unit,speed2,speed unit2,A/D/E/M/N]
+    def __init__(self,name:str,null_message=None):
+        self.name = name+"VTG"
+        if not null_message: null_message = ["076.2","T","","M","0.00","N","0.00","K","A"]
+        super().__init__(self.name,null_message)
+        self.gen_funcs = [(self.gen_heading,1),(self.gen_speed,5)]
+
+    def gen_speed(self,index):
+        super().gen_speed(index)
+        knot_speed = float(self.message[index])
+        kmh_speed = knot_speed*1.852
+        self.message[5] = "%04.2f" % knot_speed
+        self.message[7] = "%04.2f" % kmh_speed
+
+
     
 class RMC(Generator): #[name,UTCtime,A/V,latitude,N/S,longitude,E/W,speed,heading,date,MagneticV,E/W]
     def __init__(self,name:str,null_message=None):
         self.name = name+"RMC"
         if not null_message: null_message = ["210230","A","3855.4487","N","09446.0071","W","0.0","076.2","130495","003.8","E"]
         super().__init__(self.name,null_message)
-        self.gen_funcs = [(self.gen_latitude,3),(self.gen_longitude,5),(self.gen_position_status,None),(self.gen_speed,None),(self.gen_heading,None),(self.gen_date,9)]
+        self.gen_funcs = [(self.gen_latitude,3),(self.gen_longitude,5),(self.gen_position_status,None),(self.gen_speed,7),(self.gen_heading,8),(self.gen_date,9)]
 
     def gen_position_status(self):
         chance = 0.05
         if random.random()<chance: self.message[2]="V"
         else: self.message[2]="A"
-    
-    def gen_speed(self):
-        new_speed = (float(self.message[7]) + random.uniform(-1,1))
-        if new_speed>20 or new_speed<0: return self.gen_speed()
-        self.message[7] = "%04.2f" % new_speed
-
-    def gen_heading(self):
-        new_heading = (float(self.message[8]) + random.uniform(-1,1))
-        if new_heading>359 or new_heading<0: return self.gen_heading()
-        self.message[8] = "%04.2f" % new_heading
 
     def get_magnetic(self):
         pass
@@ -108,4 +124,5 @@ if __name__ == "__main__":
     g = GLL("GP")
     g1 = RMC("GP")
     g2 = ZDA("GN")
-    print(g2.generate())
+    g3 = VTG("GP")
+    print(g3.generate())
