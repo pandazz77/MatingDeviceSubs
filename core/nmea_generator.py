@@ -45,17 +45,23 @@ class Generator:
         pass
 
     def gen_current_time(self,index):
-        self.message[index]=time.strftime("%H%M%S",time.gmtime())
+        self.message[index]=time.strftime("%H%M%S.000",time.gmtime())
 
     def gen_date(self,index):
         self.message[index]=time.strftime("%d%m%y",time.gmtime())
 
-class GLL(Generator): #[name,latitude,N/S,longitude,E/W]
+class GLL(Generator): #[name,latitude,N/S,longitude,E/W,time,A/V,A/D/E/M/N]
     def __init__(self,name:str,null_message=None):
         self.name = name+"GLL"
-        if not null_message: null_message = ["0000.00","N","00000.00","E"]
+        if not null_message: null_message = ["0000.00","N","00000.00","E","00000.000","A","A"]
         super().__init__(self.name,null_message)
-        self.gen_funcs = [(self.gen_latitude,1),(self.gen_longitude,3)]
+        self.gen_funcs = [(self.gen_latitude,1),(self.gen_longitude,3),(self.gen_current_time,5)]
+
+class ZDA(Generator):
+    def __init__(self,name:str,null_message=None):
+        self.name = name+"ZDA"
+        if not null_message: null_message = [""]
+        super().__init__(self.name,null_message)
     
 class RMC(Generator): #[name,UTCtime,A/V,latitude,N/S,longitude,E/W,speed,heading,date,MagneticV,E/W]
     def __init__(self,name:str,null_message=None):
@@ -90,4 +96,4 @@ class RMC(Generator): #[name,UTCtime,A/V,latitude,N/S,longitude,E/W,speed,headin
 if __name__ == "__main__":
     g = GLL("GP")
     g1 = RMC("GP")
-    print(g1.generate())
+    print(g.generate())
