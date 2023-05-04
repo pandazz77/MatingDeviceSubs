@@ -17,7 +17,7 @@ class UdpCore(Thread):
     def listen(self,handle_func: object):
         while True:
             try:
-                data, addr = self.sock.recvfrom(1024)
+                data, addr = self.sock.recvfrom(2048)
                 handle_func(data,addr)
             except ConnectionResetError as e:
                 print(f"{self.UDP_IP}:{self.UDP_PORT} client: ",e)
@@ -58,7 +58,7 @@ class UdpClient(UdpCore):
 if __name__ == "__main__":
     import sys
     args = sys.argv
-    listener = UdpClient("127.0.0.1",4000)
+    listener = UdpClient("127.0.0.1",5010)
     listener.daemon = True
     listener.start()
     while True: sleep(1)
