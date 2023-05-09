@@ -105,7 +105,7 @@ class RMC(Generator): #[name,UTCtime,A/V,latitude,N/S,longitude,E/W,speed,headin
         self.name = name+"RMC"
         if not null_message: null_message = ["210230","A","3855.4487","N","09446.0071","W","0.0","076.2","130495","003.8","E"]
         super().__init__(self.name,null_message)
-        self.gen_funcs = [(self.gen_latitude,3),(self.gen_longitude,5),(self.gen_position_status,None),(self.gen_speed,7),(self.gen_heading,8),(self.gen_date,9)]
+        self.gen_funcs = [(self.gen_current_time,1),(self.gen_latitude,3),(self.gen_longitude,5),(self.gen_position_status,None),(self.gen_speed,7),(self.gen_heading,8),(self.gen_date,9)]
 
     def gen_position_status(self):
         chance = 0.05

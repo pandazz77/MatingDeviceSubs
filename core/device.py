@@ -23,13 +23,16 @@ class Device(UdpClient,Thread):
 
 
 if __name__ == "__main__":
-    d1 = Device(name="DEVICE_1",gen_list=[GLL("GP"),RMC("GP")],UDP_IP="127.0.0.1",UDP_PORT=4001,endpoint=("127.0.0.1",5001))
-    d2 = Device(name="DEVICE_2",gen_list=[ZDA("GN")],UDP_IP="127.0.0.1",UDP_PORT=4002,endpoint=("127.0.0.1",5001))
-    d3 = Device(name="DEVICE_3",gen_list=[VTG("GP")],UDP_IP="127.0.0.1",UDP_PORT=4003,endpoint=("127.0.0.1",5001))
+    d1 = Device(name="DEVICE_1",gen_list=[GLL("GP")],UDP_IP="127.0.0.1",UDP_PORT=5005,endpoint=("127.0.0.1",5001))
+    d2 = Device(name="DEVICE_1",gen_list=[RMC("GP")],UDP_IP="127.0.0.1",UDP_PORT=5007,endpoint=("127.0.0.1",5001))
+    d3 = Device(name="DEVICE_2",gen_list=[ZDA("GN")],UDP_IP="127.0.0.1",UDP_PORT=5009,endpoint=("127.0.0.1",5001))
+    d4 = Device(name="DEVICE_3",gen_list=[VTG("GP")],UDP_IP="127.0.0.1",UDP_PORT=5008,endpoint=("127.0.0.1",5001))
     d1.daemon = True
     d2.daemon = True
     d3.daemon = True
+    d4.daemon = True
     d1.start()
     d2.start()
     d3.start()
+    d4.start()
     while True: sleep(1)
