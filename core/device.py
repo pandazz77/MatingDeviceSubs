@@ -1,6 +1,6 @@
-from nmea_generator import GLL, RMC, ZDA, VTG
+from .nmea_generator import GLL, RMC, ZDA, VTG
 from threading import Thread
-from udp import UdpClient
+from .udp import UdpClient
 from time import sleep
 
 class Device(UdpClient,Thread):

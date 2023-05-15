@@ -1,0 +1,1 @@
+py .\main.py -g VTG_DEVICE GPVTG 127.0.0.1:5008 127.0.0.1:5001
