@@ -1,5 +1,11 @@
 # MatingDevice subs clients
 
+#### Types supported by the NMEA generator:
+> * ZDA
+> * GLL
+> * RMC
+> * VTG
+
 #### Args format:
 > -g DEVICE_NAME GENERATOR1,GENERATOR2.. CLIENT_IP:CLIENT_PORT ENDPOINT_IP:ENDPOINT_PORT
 #### Example args:
