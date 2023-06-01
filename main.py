@@ -5,7 +5,7 @@ import sys
 
 def parse_generators(generators:str) -> list:
     #GPGLL,GPRMC - example input
-    result = []
+    result = [] # generators list
     if ',' in generators:
         generators_list = generators.split(",")
     else:

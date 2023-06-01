@@ -12,7 +12,7 @@ class Generator:
         checksum = 0
         for char in ",".join(self.message):
             checksum = checksum ^ ord(char)
-        return hex(checksum).upper()[2:] # [2:] to remove "0x"
+        return f"{checksum:02X}"
 
     def exec_func(self,task:tuple):
         if not callable(task[0]): raise Exception("Invalid generator function")
